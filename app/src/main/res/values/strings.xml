@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">School</string>
+    <string name="title_activity_splash">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="verifyData">Inserez les infos svp</string>
+    <string name="noNet">Verifiez la connexion svp</string>
+    <string name="home_title">Accueil</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+</resources>
