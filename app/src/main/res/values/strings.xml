@@ -8,4 +8,7 @@
     <string name="home_title">Accueil</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="no_internet">Verifiez la connexion internet</string>
+    <string name="send_publication">Envoi en cours ...</string>
+    <string name="patientez">Patientez svp</string>
 </resources>

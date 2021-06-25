@@ -3,9 +3,8 @@ package com.these.school.views;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 
-import androidx.appcompat.app.ActionBar;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,19 +12,29 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.transition.ChangeBounds;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.these.school.R;
+import com.these.school.models.User;
+
+import java.text.SimpleDateFormat;
 
 public class SplashActivity extends AppCompatActivity {
     ImageView logo, loader;
     public static boolean endTrans = false;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore dbRef;
+    private FirebaseFirestoreSettings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,11 @@ public class SplashActivity extends AppCompatActivity {
         //supportFinishAfterTransition();
 
         mAuth = FirebaseAuth.getInstance();
+        dbRef = FirebaseFirestore.getInstance();
+        settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .build();
+        dbRef.setFirestoreSettings(settings);
 
         logo = findViewById(R.id.logo);
         loader = findViewById(R.id.loader);
@@ -66,10 +80,34 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 }else{
-                    Intent i = new Intent(SplashActivity.this, HomeActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-                    finish();
+                    //get user credentials
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DocumentReference doc = dbRef.collection("users").document(uid);
+                    doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                            if(e!=null) return;
+                            if(documentSnapshot!=null && documentSnapshot.exists()){
+                                User user = documentSnapshot.toObject(User.class);
+                                System.out.println("USERRR : "+user.getEmail());
+                                System.out.println("USERRR : "+user.getId());
+                                if(user.getType()!=null){
+                                    if(user.getType().equals("Enseignant")){
+                                        Intent i = new Intent(SplashActivity.this, HomeActivityEns.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+                                    }else{
+                                        Intent i = new Intent(SplashActivity.this, HomeActivityPar.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                }
+                            }
+                        }
+                    });
+
                 }
             }
         }, 3000);

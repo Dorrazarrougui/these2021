@@ -1,6 +1,7 @@
 package com.these.school.views;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -23,14 +24,15 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.these.school.R;
 import com.these.school.models.User;
 import com.these.school.utils.InputValidations;
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private long lastClickTime = 0;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        dbRef = FirebaseFirestore.getInstance();
 
         tilemailLogin = findViewById(R.id.tilemaillogin);
         tilpasswordLogin = findViewById(R.id.tilpasswordLogin);
@@ -115,11 +119,30 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     String uid = mAuth.getCurrentUser().getUid();
+                    DocumentReference doc = dbRef.collection("users").document(uid);
+                    doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                            if(e!=null) return;
+                            if(documentSnapshot!=null && documentSnapshot.exists()){
+                                User user = documentSnapshot.toObject(User.class);
+                                if(user.getType()!=null){
+                                    if(user.getType().equals("Enseignant")){
+                                        Intent i = new Intent(LoginActivity.this, HomeActivityEns.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+                                    }else{
+                                        Intent i = new Intent(LoginActivity.this, HomeActivityPar.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                }
+                            }
+                        }
+                    });
 
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
                 }else{
                     Log.d("LOGINN", task.getException().getMessage());
                     progressLogin.setVisibility(View.VISIBLE);

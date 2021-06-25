@@ -12,6 +12,7 @@ public class User {
     private String password;
     private String image;
     private String thumb;
+    private List<String> classes;
 
     public User() {
     }
@@ -86,5 +87,13 @@ public class User {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
+    }
+
+    public List<String> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<String> classes) {
+        this.classes = classes;
     }
 }

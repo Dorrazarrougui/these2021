@@ -17,8 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.School">
-        <activity android:name=".views.InscriptionActivity"></activity>
-        <activity android:name=".views.HomeActivity" />
+        <activity android:name=".views.MyClassesActivity"></activity>
+        <activity android:name=".views.MyAbonnementsActivity"></activity>
+        <activity android:name=".views.MyDemandesActivity"></activity>
+        <activity android:name=".views.InscriptionActivity" />
+        <activity android:name=".views.HomeActivityEns" />
+        <activity android:name=".views.HomeActivityPar" />
         <activity android:name=".views.LoginActivity" />
         <activity
             android:name=".views.SplashActivity"

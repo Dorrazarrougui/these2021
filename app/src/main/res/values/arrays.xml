@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="types">
-        <item>Administrateur</item>
         <item>Enseignant</item>
         <item>Parent</item>
+    </string-array>
+
+    <string-array name="levels">
+        <item>1ere Année</item>
+        <item>2ere Année</item>
+        <item>3ere Année</item>
+        <item>4ere Année</item>
+        <item>5ere Année</item>
     </string-array>
 </resources>

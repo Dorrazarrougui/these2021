@@ -14,4 +14,6 @@
     <color name="black_overlay">#66000000</color>
     <color name="blanc">#FFFFFF</color>
     <color name="gray">#AAAAAA</color>
+    <color name="grayDark">#555555</color>
+    <color name="yellow">#FFC107</color>
 </resources>

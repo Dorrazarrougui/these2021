@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,9 +37,6 @@ import com.these.school.ApplicationData;
 import com.these.school.R;
 import com.these.school.models.User;
 import com.these.school.utils.InputValidations;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InscriptionActivity extends AppCompatActivity {
 
@@ -153,10 +151,18 @@ public class InscriptionActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         ApplicationData.uid = uid;
-                                        Intent intent = new Intent(InscriptionActivity.this, HomeActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
+                                        if(type.equals("Enseignant")){
+                                            Intent intent = new Intent(InscriptionActivity.this, HomeActivityEns.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }else{
+                                            Intent i = new Intent(InscriptionActivity.this, HomeActivityPar.class);
+                                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(i);
+                                            finish();
+                                        }
+
                                     }else{
                                         Log.d(TAG, "DATABASE:failure", task.getException());
                                         Toast.makeText(InscriptionActivity.this, "Création utilisateur échouée", Toast.LENGTH_LONG).show();
@@ -171,7 +177,10 @@ public class InscriptionActivity extends AppCompatActivity {
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             progress.setVisibility(View.VISIBLE);
-                            Toast.makeText(InscriptionActivity.this, "Inscription échouée", Toast.LENGTH_LONG).show();
+                            if(task.getException() instanceof FirebaseAuthUserCollisionException)
+                                Toast.makeText(InscriptionActivity.this, "Email déja utilisé", Toast.LENGTH_LONG).show();
+                            else
+                                Toast.makeText(InscriptionActivity.this, "Inscription échouée", Toast.LENGTH_LONG).show();
                             llMain.setAlpha(1);
                             btnSignIn.setEnabled(true);
                             enableAll();

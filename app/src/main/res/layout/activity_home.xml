@@ -7,9 +7,26 @@
     android:layout_height="match_parent"
     android:background="@color/blanc"
     android:fitsSystemWindows="true"
-    tools:context=".views.HomeActivity"
+    tools:context=".views.HomeActivityEns"
     tools:openDrawer="end">
+    <LinearLayout
+        android:id="@+id/llList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listViewPublications"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/blanc"
+                android:scrollbars="vertical"></androidx.recyclerview.widget.RecyclerView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"

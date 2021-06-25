@@ -3,6 +3,12 @@
     <item android:id="@+id/accueil"
         android:icon="@drawable/home"
         android:title="Accueil"/>
+    <item android:id="@+id/classes"
+        android:icon="@drawable/home"
+        android:title="Mes classes"/>
+    <item android:id="@+id/demandes"
+        android:icon="@drawable/home"
+        android:title="Demandes abonnement"/>
     <item android:id="@+id/settings"
         android:icon="@drawable/profil"
         android:title="Mon Profil"/>
